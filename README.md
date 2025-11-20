@@ -3,7 +3,7 @@
 Este repositório contém uma análise completa dos dados de **Síndrome Gripal no estado de São Paulo** para os anos de **2023 e 2024**.  
 O projeto realiza limpeza, padronização, exploração estatística, testes de hipótese e geração de gráficos automáticos.
 
----
+```
 
 ## 📁 Estrutura do Repositório
 
@@ -25,7 +25,7 @@ O projeto realiza limpeza, padronização, exploração estatística, testes de 
 └── .gitattributes
 
 
----
+```
 
 ## 🧠 O que o script faz?
 
@@ -60,7 +60,7 @@ O arquivo **`analise_sindrome_gripal.py`** contém a função `run_analysis()`, 
    - Cálculo da probabilidade de um caso ter **idade ≥ 35 anos**.  
    - Cálculo da probabilidade de um caso ter **“muitos sintomas”** (acima do percentil 75 de `num_sintomas`).
 
----
+```
 
 ## 🛠️ Tecnologias Utilizadas
 
@@ -71,7 +71,7 @@ O arquivo **`analise_sindrome_gripal.py`** contém a função `run_analysis()`, 
 - SciPy (`ttest_ind`, `norm`)  
 - Math e OS (manipulação numérica e de arquivos)
 
----
+```
 
 ## 📈 Principais Insights (em potencial)
 
