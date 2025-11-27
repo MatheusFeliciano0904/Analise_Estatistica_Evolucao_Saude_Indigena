@@ -17,7 +17,7 @@ def run_analysis():
     # Perguntas a serem respondidas:
     # 1. Qual a distribuição de idade dos casos notificados em 2022 e 2024?
     # 2. Quais os sintomas mais comuns em cada ano?
-    # 3. Qual a taxa de evolução para casos graves (internação, óbito) em cada ano?
+    # 3. Qual a taxa de evolução (cura, cancelado(óbito), ignorado) em cada ano?
     # 4. Há diferenças estatísticas significativas entre os anos para idade, sintomas e evolução?
     # 5. Visualizações gráficas para comparar os anos.
     # --- FIM DAS PERGUNTAS ---
@@ -147,12 +147,125 @@ def run_analysis():
     )
     print("Evolução do caso por ano:")
     display(evolucao_caso, "\n")
-    
-    
+
     
     # # 4 ** -- Probabilidade --
     
+    # PROBABILIDADE: Qual a probabilidade de um caso evoluir para óbito em 2022 vs 2024?
+    def calcular_probabilidade_obito(df, ano):
+        df_ano = df[df["ano"] == ano]
+        total_casos = len(df_ano)
+        casos_obito = len(df_ano[df_ano["evolucaocaso"] == "Cancelado"])
+        probabilidade = casos_obito / total_casos if total_casos > 0 else 0
+        return probabilidade
+    prob_obito_2022 = calcular_probabilidade_obito(df_analise, 2022)
+    prob_obito_2024 = calcular_probabilidade_obito(df_analise, 2024)
+    
+    print(f"Probabilidade de óbito em 2022: {prob_obito_2022:.4f}")
+    print(f"Probabilidade de óbito em 2024: {prob_obito_2024:.4f}\n")
+    
+    #PROBAILIDADE: Qual a probabilidade de um caso curar em 2022 vs 2024?
+    def calcular_probabilidade_cura(df, ano):
+        df_ano = df[df["ano"] == ano]
+        total_casos = len(df_ano)
+        casos_cura = len(df_ano[df_ano["evolucaocaso"] == "Cura"])
+        probabilidade = casos_cura / total_casos if total_casos > 0 else 0
+        return probabilidade
+    prob_cura_2022 = calcular_probabilidade_cura(df_analise, 2022)
+    prob_cura_2024 = calcular_probabilidade_cura(df_analise, 2024)
+    print(f"Probabilidade de cura em 2022: {prob_cura_2022:.4f}")
+    print(f"Probabilidade de cura em 2024: {prob_cura_2024:.4f}\n")
+    
+    #PROBAILIDADE: Qual a probabilidade de um caso ser ignorado em 2022 vs 2024?
+    def calcular_probabilidade_ignorado(df, ano):
+        df_ano = df[df["ano"] == ano]
+        total_casos = len(df_ano)
+        casos_ignorado = len(df_ano[df_ano["evolucaocaso"] == "Ignorado"])
+        probabilidade = casos_ignorado / total_casos if total_casos > 0 else 0
+        return probabilidade
+    prob_ignorado_2022 = calcular_probabilidade_ignorado(df_analise, 2022)
+    prob_ignorado_2024 = calcular_probabilidade_ignorado(df_analise, 2024)
+    print(f"Probabilidade de ignorado em 2022: {prob_ignorado_2022:.4f}")
+    print(f"Probabilidade de ignorado em 2024: {prob_ignorado_2024:.4f}\n")
+    
+    
+    
     # # 5 ** -- Inferencia estatística --
+    
+    # inferência estatística para idade entre 2022 e 2024
+    
+        # 1. Teste Médias Idade
+    idade_media_2022 = df_analise[df_analise["ano"] == 2022]["idade"].mean()
+    idade_media_2024 = df_analise[df_analise["ano"] == 2024]["idade"].mean()
+    print(f"Média de idade em 2022: {idade_media_2022:.2f}")
+    print(f"Média de idade em 2024: {idade_media_2024:.2f}\n")
+    
+    
+    # definir hipótese nula e alternativa
+    # H0: A média de idade em 2022 é igual à média de idade em 2024.
+    # H1: A média de idade em 2022 é diferente da média de idade em 2024.
+    valor_base = 0.05  # nível de significância
+    
+    #boxplot para idade (exportar gráfico para pasta resultados)
+    plt.figure(figsize=(10, 6))
+    sns.boxplot(x="ano", y="idade", data=df_analise)
+    plt.title("Boxplot da Idade por Ano")
+    plt.savefig(os.path.join(output, "boxplot_idade_por_ano.png"))
+    plt.close()
+    
+    # Histograma para idade tanto 2022 quanto 2024 (exportar gráfico para pasta resultados)
+    
+    plt.figure(figsize=(10, 6))
+    sns.histplot(idade_2022, bins=30, kde=True, color='blue')
+    plt.title("Histograma da Idade em 2022")
+    plt.savefig(os.path.join(output, "histograma_idade_2022.png"))
+    plt.close()
+    plt.figure(figsize=(10, 6))
+    sns.histplot(idade_2024, bins=30, kde=True, color='orange')
+    plt.title("Histograma da Idade em 2024")
+    plt.savefig(os.path.join(output, "histograma_idade_2024.png"))
+    plt.close()
+
+    
+    # qqplot para idade (exportar gráfico para pasta resultados)
+    import statsmodels.api as sm
+    plt.figure(figsize=(10, 6))
+    sm.qqplot(idade_2022, line ='s')
+    plt.title("QQ Plot da Idade em 2022")
+    plt.savefig(os.path.join(output, "qqplot_idade_2022.png"))
+    plt.close()
+    plt.figure(figsize=(10, 6))
+    sm.qqplot(idade_2024, line ='s')
+    plt.title("QQ Plot da Idade em 2024")
+    plt.savefig(os.path.join(output, "qqplot_idade_2024.png"))
+    plt.close()
+    
+    
+    # teste shapiro-wilk para normalidade
+    from scipy.stats import shapiro
+    stat_2022, p_2022 = shapiro(idade_2022)
+    stat_2024, p_2024 = shapiro(idade_2024)
+    print(f"Teste Shapiro-Wilk para 2022: estatística={stat_2022:.4f}, p-valor={p_2022:.4f}")
+    print(f"Teste Shapiro-Wilk para 2024: estatística={stat_2024:.4f}, p-valor={p_2024:.4f}\n")
+    # interpretar resultados
+    alpha = 0.05
+    if p_2022 > alpha:
+        print("2022: A amostra parece vir de uma distribuição normal (falha em rejeitar H0)\n")
+    else:
+        print("2022: A amostra não parece vir de uma distribuição normal (rejeita H0)\n")
+        
+    if p_2024 > alpha:
+        print("2024: A amostra parece vir de uma distribuição normal (falha em rejeitar H0)\n")
+    else:
+        print("2024: A amostra não parece vir de uma distribuição normal (rejeita H0)\n")
+    
+    # realizar o teste t
+    stat, p_value = ttest_ind(idade_2022, idade_2024, equal_var=False)
+    print(f"Teste t para idade entre 2022 e 2024: estatística={stat:.4f}, p-valor={p_value:.4f}\n")
+    if p_value < valor_base:
+        print("Rejeita H0: Há diferença significativa na idade média entre 2022 e 2024.\n")
+    else:
+        print("Falha em rejeitar H0: Não há diferença significativa na idade média entre 2022 e 2024.\n")  
     
     
         
