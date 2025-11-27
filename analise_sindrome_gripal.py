@@ -24,7 +24,7 @@ def run_analysis():
     
     #  1 ** --- CONFIGURAÇÕES INICIAIS ---
     dados = "dados"          # pasta onde estão os CSV
-    output = "resultados"   # pasta onde os gráficos serão salvos
+    output = "output"   # pasta onde os gráficos serão salvos
     os.makedirs(output, exist_ok=True) # cria a pasta resultados, se não existir ainda.
 
     # Nomes dos arquivos (dentro da pasta 'dados')
@@ -194,7 +194,12 @@ def run_analysis():
     
     # inferência estatística para idade entre 2022 e 2024
     
+    # amostras de idade por ano
+    idades_2022 = df_analise.loc[df_analise["ano"] == 2022, "idade"].dropna()
+    idades_2024 = df_analise.loc[df_analise["ano"] == 2024, "idade"].dropna()
+    
         # 1. Teste Médias Idade
+        
     idade_media_2022 = df_analise[df_analise["ano"] == 2022]["idade"].mean()
     idade_media_2024 = df_analise[df_analise["ano"] == 2024]["idade"].mean()
     print(f"Média de idade em 2022: {idade_media_2022:.2f}")
@@ -216,12 +221,12 @@ def run_analysis():
     # Histograma para idade tanto 2022 quanto 2024 (exportar gráfico para pasta resultados)
     
     plt.figure(figsize=(10, 6))
-    sns.histplot(idade_2022, bins=30, kde=True, color='blue')
+    sns.histplot(idades_2022, bins=30, kde=True, color='blue')
     plt.title("Histograma da Idade em 2022")
     plt.savefig(os.path.join(output, "histograma_idade_2022.png"))
     plt.close()
     plt.figure(figsize=(10, 6))
-    sns.histplot(idade_2024, bins=30, kde=True, color='orange')
+    sns.histplot(idades_2024, bins=30, kde=True, color='orange')
     plt.title("Histograma da Idade em 2024")
     plt.savefig(os.path.join(output, "histograma_idade_2024.png"))
     plt.close()
@@ -230,12 +235,12 @@ def run_analysis():
     # qqplot para idade (exportar gráfico para pasta resultados)
     import statsmodels.api as sm
     plt.figure(figsize=(10, 6))
-    sm.qqplot(idade_2022, line ='s')
+    sm.qqplot(idades_2022, line ='s')
     plt.title("QQ Plot da Idade em 2022")
     plt.savefig(os.path.join(output, "qqplot_idade_2022.png"))
     plt.close()
     plt.figure(figsize=(10, 6))
-    sm.qqplot(idade_2024, line ='s')
+    sm.qqplot(idades_2024, line ='s')
     plt.title("QQ Plot da Idade em 2024")
     plt.savefig(os.path.join(output, "qqplot_idade_2024.png"))
     plt.close()
@@ -243,8 +248,8 @@ def run_analysis():
     
     # teste shapiro-wilk para normalidade
     from scipy.stats import shapiro
-    stat_2022, p_2022 = shapiro(idade_2022)
-    stat_2024, p_2024 = shapiro(idade_2024)
+    stat_2022, p_2022 = shapiro(idades_2022)
+    stat_2024, p_2024 = shapiro(idades_2024)
     print(f"Teste Shapiro-Wilk para 2022: estatística={stat_2022:.4f}, p-valor={p_2022:.4f}")
     print(f"Teste Shapiro-Wilk para 2024: estatística={stat_2024:.4f}, p-valor={p_2024:.4f}\n")
     # interpretar resultados
@@ -260,7 +265,7 @@ def run_analysis():
         print("2024: A amostra não parece vir de uma distribuição normal (rejeita H0)\n")
     
     # realizar o teste t
-    stat, p_value = ttest_ind(idade_2022, idade_2024, equal_var=False)
+    stat, p_value = ttest_ind(idades_2022, idades_2024, equal_var=False)
     print(f"Teste t para idade entre 2022 e 2024: estatística={stat:.4f}, p-valor={p_value:.4f}\n")
     if p_value < valor_base:
         print("Rejeita H0: Há diferença significativa na idade média entre 2022 e 2024.\n")
