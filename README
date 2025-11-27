@@ -1,0 +1,62 @@
+# Trabalho de Estatística 2025 – Análise da Síndrome Gripal em SP (2022 x 2024)
+
+Este repositório contém o código e os dados utilizados em um trabalho de Estatística
+voltado para a análise de casos de **Síndrome Gripal** no estado de São Paulo,
+comparando os anos **2022** e **2024**.
+
+O foco principal é:
+
+- Descrever o comportamento da variável **idade** dos casos notificados;
+- Identificar **sintomas mais frequentes** em cada ano;
+- Analisar a **evolução dos casos** (Cura, Cancelado/Óbito, Ignorado);
+- Verificar, via **inferência estatística**, se há diferença significativa
+  na idade entre os anos analisados.
+
+---
+
+## 📁 Estrutura do Projeto
+
+```text
+TRABALHO_ESTATISTICA_2025/
+├── dados/
+│   ├── Notificações de Síndrome Gripal - 2022_MAIOR.csv
+│   └── Notificações de Síndrome Gripal - 2024_MAIOR.csv
+├── output/
+│   ├── boxplot_idade_por_ano.png
+│   ├── histograma_idade_2022.png
+│   ├── histograma_idade_2024.png
+│   ├── qqplot_idade_2022.png
+│   └── qqplot_idade_2024.png
+├── analise_sindrome_gripal.py
+├── Instruções.pdf
+├── .gitattributes
+└── .gitignore
+
+
+## 📌 Etapas Realizadas
+1. **Carregamento dos dados** (CSV de 2022 e 2024 – até 5000 linhas cada).
+2. **Tratamento**: normalização de colunas, conversão de idade para Int64, inclusão da coluna `ano`, união das bases.
+3. **Seleção de variáveis**: `idade`, `sintomas`, `evolucaocaso`, `ano`.
+4. **Estatística descritiva**:
+   - Idade por ano (`describe`)
+   - 4 sintomas mais comuns por ano
+   - Distribuição de evolução dos casos
+5. **Probabilidades**:
+   - Cancelado/Óbito
+   - Cura
+   - Ignorado
+6. **Inferência estatística sobre idade**:
+   - Histogramas, boxplot e QQ-plots
+   - Teste **Shapiro-Wilk** (normalidade)
+   - Teste **t de Student** para comparar as médias de idade (2022 × 2024)
+
+## 📊 Saídas
+Geradas automaticamente na pasta **output/**:
+- Boxplot (idade)
+- Histogramas por ano
+- QQ-plots por ano
+
+## ▶️ Como executar
+```bash
+pip install pandas matplotlib seaborn scipy statsmodels ipython
+python analise_sindrome_gripal.py
